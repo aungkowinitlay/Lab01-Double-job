@@ -1,0 +1,37 @@
+name: Deploy to Local Machine
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy_and_build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Build Frontend Docker Image
+        working-directory: ./frontend
+        run: docker build -t my-backend .
+
+      - name: Run Frontend Container
+        run: |
+          docker stop frontend-container || true
+          docker rm frontend-container || true
+          docker run -d --name frontend-container -p 80:80 my-frontend
+
+      - name: Build Backend Docker Image
+        working-directory: ./backend
+        run: docker build -t my-backend .
+
+      - name: Run Backend Container
+        run: |
+          docker stop backend-container || true
+          docker rm backend-container || true
+          docker run -d --name backend-container -p 5000:5000 my-backend
