@@ -18,7 +18,7 @@ jobs:
 
       - name: Build Frontend Docker Image
         working-directory: ./frontend
-        run: docker build -t my-backend .
+        run: docker build -t my-frontend .
 
       - name: Run Frontend Container
         run: |
